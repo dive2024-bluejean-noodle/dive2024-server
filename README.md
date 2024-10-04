@@ -1,1 +1,1 @@
-# dive2024-server
+# DIVE2024 Server
