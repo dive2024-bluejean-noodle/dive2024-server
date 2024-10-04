@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     # added apps
     'User',
+    'Mentoring',
     'rest_framework',
 ]
 

@@ -58,7 +58,7 @@ class UserDetailView(APIView):
 class LoginView(APIView):
     def post(self, request):
         username = request.data.get('username')  # 사용자 이름
-        password = request.data.get('password')   # 비밀번호
+        password = request.data.get('password')  # 비밀번호
 
         user = authenticate(username=username, password=password)  # 사용자 인증
 
