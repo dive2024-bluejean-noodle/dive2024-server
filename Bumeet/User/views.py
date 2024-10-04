@@ -10,8 +10,6 @@ from django.shortcuts import get_object_or_404
 
 # login
 from django.contrib.auth import authenticate
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import api_view
 
 # 유저 생성
 class UserCreateView(APIView):
@@ -24,11 +22,11 @@ class UserCreateView(APIView):
 
 # 유저 정보 업데이트
 class UserUpdateView(APIView):
-    def get_object(self, pk):
-        return get_object_or_404(CustomUser, pk=pk)
+    def get_object(self, username):
+        return get_object_or_404(CustomUser, username=username)
 
-    def patch(self, request, pk, *args, **kwargs):
-        user = self.get_object(pk)
+    def patch(self, request, username, *args, **kwargs):
+        user = self.get_object(username)
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -37,11 +35,11 @@ class UserUpdateView(APIView):
 
 # 유저 삭제(deactive)
 class UserDeleteView(APIView):
-    def get_object(self, pk):
-        return get_object_or_404(CustomUser, pk=pk)
+    def get_object(self, username):
+        return get_object_or_404(CustomUser, username=username)
 
-    def patch(self, request, pk, *args, **kwargs):
-        user = self.get_object(pk)
+    def patch(self, request, username, *args, **kwargs):
+        user = self.get_object(username)
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -49,11 +47,11 @@ class UserDeleteView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserDetailView(APIView):
-    def get_object(self, pk):
-        return get_object_or_404(CustomUser, pk=pk)
+    def get_object(self, username):
+        return get_object_or_404(CustomUser, username=username)
 
-    def get(self, request, pk, *args, **kwargs):
-        user = self.get_object(pk)
+    def get(self, request, username, *args, **kwargs):
+        user = self.get_object(username)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
