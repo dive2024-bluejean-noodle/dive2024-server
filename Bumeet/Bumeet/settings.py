@@ -50,8 +50,8 @@ INSTALLED_APPS = [
     'User',
     'Mentoring',
     'JobList',
-    'RentalHousing',
     'chat',
+    'RentalHousing',
     'rest_framework',
     'rest_framework_simplejwt',
 ]

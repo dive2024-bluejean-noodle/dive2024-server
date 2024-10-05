@@ -8,6 +8,7 @@ from langgraph.graph import END, StateGraph, START
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 import os
 
 
@@ -27,6 +28,7 @@ class GraphState(TypedDict):
 
 
 class ProcessQueryView(APIView):
+    #permission_classes = [IsAuthenticated]  # 인증이 필요하다면 주석을 해제하세요.
     """
     Class-based view to process the query using BuMeetAgent and LangGraph workflow.
     """
@@ -98,6 +100,6 @@ class ProcessQueryView(APIView):
 
         # 최종 결과 반환
         # final_generation = results[-1]["generation"] if results else None
-        return Response({"results": results})
+        return Response({"results": results[-1]})
         # "final_generation": final_generation,
 
