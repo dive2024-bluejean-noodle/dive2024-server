@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # added apps
     'User',
     'Mentoring',
+    'JobList',
     'rest_framework',
     'rest_framework_simplejwt',
 ]
