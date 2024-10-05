@@ -12,9 +12,9 @@
     {
         "first_name": "Bu",
         "last_name": "Meet",
-        "username": "seoul",
-        "password": "seoul",
-        "email": "seoul@test.com",
+        "username": "busan",
+        "password": "busan",
+        "email": "busan@test.com",
         "local": null,
         "id_photo": null,
         "language": "Japanese",
@@ -35,8 +35,8 @@
 - **JSON Example**:
     ```json
     {
-        "username": "seoul",
-        "password": "seoul"
+        "username": "busan",
+        "password": "busan"
     }
     ```
 
