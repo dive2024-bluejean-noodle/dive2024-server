@@ -11,11 +11,17 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import openai
 import os
 # from django.conf.global_settings import AUTH_USER_MODEL
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+openai.api_key = os.getenv('OPENAI_API_KEY')
+TAVILY_API_KEY = os.getenv('TAVILY_API_KEY')
 
 
 # Quick-start development settings - unsuitable for production
@@ -44,6 +50,7 @@ INSTALLED_APPS = [
     'User',
     'Mentoring',
     'JobList',
+    'chat',
     'rest_framework',
     'rest_framework_simplejwt',
 ]

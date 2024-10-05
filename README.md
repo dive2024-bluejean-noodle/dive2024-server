@@ -126,3 +126,22 @@
    ```bash
    python manage.py runserver
    ```
+
+  ---
+
+  ### chat app 코드 작성하면서 추가로 설치한 모듈
+```
+python = "3.11.5"
+django = "5.0"
+djangorestframework = "3.15.2"
+pillow = "10.4.0"
+langchain-community = "0.3.1"
+tiktoken = "^0.8.0"
+langchain-openai = "0.2.1"
+langchainhub = "^0.1.21"
+chromadb = "^0.5.11"
+python-dotenv = "^1.0.1"
+langsmith = "^0.1.131"
+tavily-python = "^0.5.0"
+langgraph = "^0.2.34"
+```
