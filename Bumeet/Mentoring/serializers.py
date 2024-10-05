@@ -21,19 +21,35 @@ class MatchingSerializer(serializers.ModelSerializer):
 class MatchingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Matching
-        fields = '__all__'
+        fields = ['mento', 'mentee', 'title', 'location', 'match']
+
+class MatchingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Matching
+        fields = ['mento', 'mentee', 'title', 'location', 'match']
 
     def create(self, validated_data):
-        mento_user_id = validated_data['mento']  # mento ID
-        mento_user = get_object_or_404(CustomUser, username=mento_user_id)
+        mento_user_id = validated_data.pop('mento')  # mento ID를 가져오고 validated_data에서 제거
+        mento_user = get_object_or_404(CustomUser, username=mento_user_id)  # ID로 멘토 사용자 가져오기
 
         if not mento_user.mento:
             raise serializers.ValidationError("당신은 멘토 유저가 아닙니다.")
 
+        # 멘토와 멘티의 ID를 사용하여 매칭 생성
+        match = Matching(
+            mento=mento_user,  # 멘토 사용자 객체
+            mentee=validated_data.get('mentee', None),  # mentee ID를 받아 객체로 전달
+            title=validated_data['title'],
+            location=validated_data['location'],
+            match=validated_data.get('match', False)
+        )
+        match.save()
+        return match
+
         # 매칭 생성
         match = Matching(
             mento=mento_user,  # 멘토 사용자 객체
-            mentee=validated_data.get('mentee', None),  # ID 대신 인스턴스를 넣지 않음
+            mentee=mentee_user,  # 멘티 사용자 객체
             title=validated_data['title'],
             location=validated_data['location'],
             match=validated_data.get('match', False)
