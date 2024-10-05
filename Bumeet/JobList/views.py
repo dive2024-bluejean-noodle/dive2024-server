@@ -13,7 +13,7 @@ from .serializers import *
 
 # Create your views here.
 class JobDetailView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, pk, *args, **kwargs):
         # 데이터가 없으면 404 에러 반환
@@ -23,7 +23,7 @@ class JobDetailView(APIView):
         return Response(serializer.data, status=200)
 
 class JobListView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         try:
             objs = Job.objects.all()
