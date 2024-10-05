@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # added apps
     'User',
     'Mentoring',
+    'chat'
     'rest_framework',
 ]
 

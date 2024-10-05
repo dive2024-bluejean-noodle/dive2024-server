@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('User/', include('User.urls')),  # User 앱의 urls.py 파일 포함
     path('Mentoring/', include('Mentoring.urls')),  # 멘토링
+    path('chat/', include('chat.urls')),
     path('Accounts/', include('django.contrib.auth.urls')),  # Django auth URLs 포함
 ]
 
