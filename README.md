@@ -1,7 +1,6 @@
 # DIVE2024 Server
 
-# API Documentation
-## API 정리
+## API Documentation
 
 ### 계정 생성
 
