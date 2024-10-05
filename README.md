@@ -1,6 +1,5 @@
 # DIVE2024 Server
 
-```markdown
 # API Documentation
 
 ## 설치 패키지
@@ -127,4 +126,3 @@
    ```bash
    python manage.py runserver
    ```
-```
