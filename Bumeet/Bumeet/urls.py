@@ -22,9 +22,10 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('User/', include('User.urls')),  # User 앱의 urls.py 파일 포함
-    path('User/', include('django.contrib.auth.urls')),  # Django auth URLs 포함
-    path('Mentoring/', include('Mentoring.urls')), # 멘토링
+    path('Mentoring/', include('Mentoring.urls')),  # 멘토링
+    path('Accounts/', include('django.contrib.auth.urls')),  # Django auth URLs 포함
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

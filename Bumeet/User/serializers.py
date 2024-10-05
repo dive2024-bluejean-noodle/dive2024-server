@@ -6,7 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['first_name', 'last_name', 'username', 'email', 'password',
                   'local', 'id_photo', 'language', 'nationality', 'is_active',
-                  'visa_number', 'age', 'sex', ]
+                  'visa_number', 'age', 'sex', 'mento']
         extra_kwargs = {'password': {'write_only': True}}  # 비밀번호를 write-only로 설정
 
     def create(self, validated_data):
@@ -39,6 +39,11 @@ class UserSerializer(serializers.ModelSerializer):
         instance.local = validated_data.get('local', instance.local)
         instance.id_photo = validated_data.get('id_photo', instance.id_photo)
         instance.language = validated_data.get('language', instance.language)
+        instance.mento = validated_data.get('mento', instance.mento)
+
+        # 멘토가 True이고 국적이 한국이 아닌 경우 예외 발생
+        if instance.mento and instance.nationality != "Korea":
+            raise serializers.ValidationError("멘토는 한국인만 가능합니다.")
 
         # 비밀번호가 있을 경우 암호화
         password = validated_data.get('password', None)

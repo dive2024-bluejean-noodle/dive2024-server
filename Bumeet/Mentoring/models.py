@@ -1,28 +1,22 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from User.models import CustomUser
 
-from django.core.validators import MinValueValidator, MaxValueValidator
-
-# Create your models here.
 class Matching(models.Model):
-    # mento 필드는 mento=True인 사용자만 선택 가능
     mento = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
-        related_name='mento',
+        related_name='mentoring',
         limit_choices_to={'mento': True}  # mento=True인 사용자만 선택 가능
     )
-
-    # mentee 필드는 mento=False인 사용자만 선택 가능
     mentee = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
-        related_name='mentee',
+        related_name='mentees',
         limit_choices_to={'mento': False},  # mento=False인 사용자만 선택 가능
         null=True,
         blank=True
     )
-
     title = models.CharField(max_length=100, unique=True, null=False, blank=False)  # 주제
     created_at = models.DateTimeField(auto_now_add=True)  # 업로드 일자
     location = models.CharField(max_length=100, null=False, blank=False)  # 만날 장소
