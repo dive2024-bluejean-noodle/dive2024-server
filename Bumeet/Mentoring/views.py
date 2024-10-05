@@ -8,30 +8,40 @@ from .models import Matching
 from .serializers import *
 from django.shortcuts import get_object_or_404
 from User.models import CustomUser
+from rest_framework.permissions import IsAuthenticated
 
 
 class MatchingCreateView(APIView):
+    permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
+
     def post(self, request, *args, **kwargs):
-        serializer = MatchingSerializer(data=request.data)
+        # 요청 데이터에 인증된 사용자 정보 추가
+        data = request.data.copy()  # request.data는 불변이므로 복사
+        data['mento'] = request.user.id  # 현재 인증된 사용자의 ID를 멘토로 설정
+
+        serializer = MatchingSerializer(data=data)
         if serializer.is_valid():
             serializer.save()  # 매칭 생성
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 class MatchingUpdateView(APIView):
+    permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
+
     def get_object(self, pk):
         return get_object_or_404(Matching, pk=pk)
 
     def patch(self, request, pk, *args, **kwargs):
         match = self.get_object(pk)
 
-        # 요청 데이터에서 username 추출
-        mentee_username = request.data.get('mentee_username')
+        # 인증된 사용자를 멘티로 설정
+        mentee = request.user
+        match.mentee = mentee  # 매칭에 멘티 설정
+
+        # 요청 데이터에서 멘토링 요청 추출
         mentoring_request = request.data.get('mentoring_request')
-        if mentee_username:
-            # username으로 멘티 찾기
-            mentee = get_object_or_404(CustomUser, username=mentee_username)
-            match.mentee = mentee  # 매칭에 멘티 설정
+        if mentoring_request:
             match.match = mentoring_request
 
         serializer = MatchingSerializer(match, data=request.data, partial=True)
@@ -39,45 +49,22 @@ class MatchingUpdateView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-# 요청 json 형태
-# {
-#     "mentee_username": "some_mentee_username",
-#     "match": true  // 또는 다른 필드 업데이트
-# }
 
-# class MatchingDeleteView(APIView):
-#     def get_object(self, pk):
-#         return get_object_or_404(Matching, pk=pk)
-
-#     def delete(self, request, pk, *args, **kwargs):
-#         match = self.get_object(pk)
-        
-#         # 삭제 요청하는 사용자의 username 추출
-#         request_username = request.data.get('request_username')
-
-#         # 멘토의 username과 요청하는 사용자의 username 비교
-#         if match.mento.username == request_username:
-#             match.delete()  # 매칭 삭제
-#             return Response(status=status.HTTP_204_NO_CONTENT)
-        
-#         return Response(
-#             {"detail": "삭제 권한이 없습니다."}, 
-#             status=status.HTTP_403_FORBIDDEN
-#         )
 
 class MatchingDeleteView(APIView):
+    permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
+
     def get_object(self, pk):
         return get_object_or_404(Matching, pk=pk)
 
     def delete(self, request, pk, *args, **kwargs):
         match = self.get_object(pk)
         
-        # 삭제 요청하는 사용자의 username을 쿼리 매개변수로 추출
-        request_username = request.query_params.get('request_username')
-
-        # 멘토의 username과 요청하는 사용자의 username 비교
-        if match.mento.username == request_username:
+        # 삭제 요청하는 사용자의 ID를 추출
+        request_user = request.user  # JWT 인증을 통해 얻은 사용자 객체
+        
+        # 멘토 또는 멘티가 요청한 사용자와 일치하는지 확인
+        if match.mento == request_user or (match.mentee and match.mentee == request_user):
             match.delete()  # 매칭 삭제
             return Response(status=status.HTTP_204_NO_CONTENT)
         
@@ -87,6 +74,8 @@ class MatchingDeleteView(APIView):
         )
 
 class MatchingListView(APIView):
+    permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
+
     def get(self, request, *args, **kwargs):
         matching = Matching.objects.all()
         serializer = MatchingListSerializer(matching, many=True)
@@ -115,21 +104,17 @@ class MatchingDetailView(APIView):
 
 
 class CommentCreateView(APIView):
+    permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
+
     def post(self, request, matching_id, *args, **kwargs):
         try:
             matching = Matching.objects.get(pk=matching_id)  # 매칭 객체 가져오기
         except Matching.DoesNotExist:
             return Response({"detail": "Matching not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        # 현재 인증된 사용자를 writer로 설정
+        writer = request.user  
 
-        writer_id = request.data.get('writer')  # 요청에서 작성자 ID를 가져옴
-        if not writer_id:
-            return Response({"detail": "Writer ID is required."}, status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
-            writer = CustomUser.objects.get(pk=writer_id)  # 작성자 객체 가져오기
-        except CustomUser.DoesNotExist:
-            return Response({"detail": "No CustomUser matches the given writer ID."}, status=status.HTTP_404_NOT_FOUND)
-        
         serializer = CommentSerializer(data=request.data)
         
         if serializer.is_valid():

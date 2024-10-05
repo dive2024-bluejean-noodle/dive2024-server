@@ -23,9 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
             sex=validated_data.get('sex', 'Male'),
             visa_number=validated_data['visa_number'],
             age=validated_data['age'],
-
-
-
+            mento=validated_data['mento'],
             is_active=validated_data['is_active'],
         )
         user.set_password(validated_data['password'])  # 비밀번호 암호화
